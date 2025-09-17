@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import userRouter from './routes/user.route';
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
 
+app.use('/api/users', userRouter);
 
 // Basic error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
