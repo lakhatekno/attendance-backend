@@ -23,7 +23,7 @@ export class UserController {
           name: name,
           role: role
       });
-      res.status(201).json(user);
+      res.status(201).json(user.id);
     } catch(e) {
       next(e);
     }
