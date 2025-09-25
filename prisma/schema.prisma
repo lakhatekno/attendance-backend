@@ -62,6 +62,8 @@ model ShiftAssignment {
   user_id             Int
   shift_start         DateTime
   shift_end           DateTime
+  deleted             Boolean                 @default(false)
+  deletedAt           DateTime?               
   shift               Shift                   @relation(fields: [shift_id], references: [id])
   user                User                    @relation(fields: [user_id], references: [id])
   attendance_logs     AttendanceLog[]

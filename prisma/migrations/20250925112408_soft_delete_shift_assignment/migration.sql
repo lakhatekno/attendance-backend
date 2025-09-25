@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `shift_assignments` ADD COLUMN `deleted` BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN `deletedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
