@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import userRouter from './routes/user.route';
 import shiftRouter from './routes/shift.route';
 import assignmentRouter from './routes/shiftAssignment.route';
+import attendanceRouter from './routes/attendanceLog.route';
 
 dotenv.config();
 
@@ -20,7 +21,8 @@ app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
 
 app.use('/api/users', userRouter);
 app.use('/api/shifts', shiftRouter);
-app.use('/api/assignment', assignmentRouter);
+app.use('/api/shift-assignments', assignmentRouter);
+app.use('/api/attendance-logs', attendanceRouter);
 
 
 // Basic error handler
