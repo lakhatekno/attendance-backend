@@ -7,6 +7,7 @@ import userRouter from './routes/user.route';
 import shiftRouter from './routes/shift.route';
 import assignmentRouter from './routes/shiftAssignment.route';
 import attendanceRouter from './routes/attendanceLog.route';
+import summaryRouter from './routes/dailySummary.route';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/api/users', userRouter);
 app.use('/api/shifts', shiftRouter);
 app.use('/api/shift-assignments', assignmentRouter);
 app.use('/api/attendance-logs', attendanceRouter);
+app.use('/api/daily-summary', summaryRouter);
 
 
 // Basic error handler
