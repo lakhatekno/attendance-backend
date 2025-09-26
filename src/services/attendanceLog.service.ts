@@ -1,5 +1,5 @@
 import { prisma } from '../libs/prismaClient';
-import { AttendanceType, AttendanceStatus } from '@prisma/client';
+import { AttendanceType, AttendanceStatus, Prisma } from '@prisma/client';
 
 export type AttendanceFilterType = {
 	shiftAssignmentId: number | null;
@@ -35,7 +35,7 @@ export class AttendanceLogServices {
 	}
 
 	async getFilteredLogs(filter: AttendanceFilterType) {
-		const where: any = {};
+		const where: Prisma.AttendanceLogWhereInput = {};
 
 		if (filter.shiftAssignmentId) {
 			where.shift_assignment_id = filter.shiftAssignmentId;
@@ -59,13 +59,11 @@ export class AttendanceLogServices {
 			}
 		}
 
-		const relationFilter: any = {};
 		if (filter.employeeName) {
-			relationFilter.shift_assignment = {
+			where.shift_assignment = {
 				user: {
 					name: {
 						contains: filter.employeeName,
-						mode: 'insensitive',
 					},
 				},
 			};
@@ -73,10 +71,7 @@ export class AttendanceLogServices {
 
 		return prisma.attendanceLog.findMany({
 			select: attendanceData,
-			where: {
-				...where,
-				...relationFilter,
-			},
+			where: where,
 			orderBy: {
 				record: 'desc',
 			},
