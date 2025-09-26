@@ -26,7 +26,7 @@ model AttendanceLog {
   id                    Int                 @id @default(autoincrement())
   shift_assignment_id   Int       
   record                DateTime            @default(now())
-  category              AttendaceType
+  category              AttendanceType
   status                AttendanceStatus  
   shift_assignment      ShiftAssignment     @relation(fields: [shift_assignment_id], references: [id])
 }
@@ -96,7 +96,7 @@ enum Role {
   user
 }
 
-enum AttendaceType {
+enum AttendanceType {
   checkin
   checkout
 }
