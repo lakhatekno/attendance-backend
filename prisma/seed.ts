@@ -1,4 +1,4 @@
-import { PrismaClient, Role, AttendaceType, AttendanceStatus, CheckStatus, SummaryStatus } from '@prisma/client';
+import { PrismaClient, Role, AttendanceType, AttendanceStatus, CheckStatus, SummaryStatus } from '@prisma/client';
 import { hashPassword } from '../src/libs/crypto';
 
 const prisma = new PrismaClient();
@@ -80,25 +80,25 @@ async function main() {
     data: [
       {
         shift_assignment_id: assign1.id,
-        category: AttendaceType.checkin,
+        category: AttendanceType.checkin,
         status: AttendanceStatus.ontime,
         record: new Date('2025-09-13T08:01:00'),
       },
       {
         shift_assignment_id: assign1.id,
-        category: AttendaceType.checkout,
+        category: AttendanceType.checkout,
         status: AttendanceStatus.ontime,
         record: new Date('2025-09-13T16:02:00'),
       },
       {
         shift_assignment_id: assign2.id,
-        category: AttendaceType.checkin,
+        category: AttendanceType.checkin,
         status: AttendanceStatus.late,
         record: new Date('2025-09-13T13:15:00'),
       },
       {
         shift_assignment_id: assign2.id,
-        category: AttendaceType.checkout,
+        category: AttendanceType.checkout,
         status: AttendanceStatus.early_leave,
         record: new Date('2025-09-13T20:30:00'),
       },

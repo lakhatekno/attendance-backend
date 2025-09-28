@@ -1,42 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `user_id` on the `attendance_logs` table. All the data in the column will be lost.
-  - The values [early] on the enum `attendance_logs_status` will be removed. If these variants are still used in the database, this will fail.
-  - You are about to drop the column `refresh` on the `refresh_tokens` table. All the data in the column will be lost.
-  - You are about to drop the `user` table. If the table is not empty, all the data it contains will be lost.
-  - A unique constraint covering the columns `[token]` on the table `refresh_tokens` will be added. If there are existing duplicate values, this will fail.
-  - Added the required column `shift_assignment_id` to the `attendance_logs` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `token` to the `refresh_tokens` table without a default value. This is not possible if the table is not empty.
-
-*/
--- DropForeignKey
-ALTER TABLE `attendance_logs` DROP FOREIGN KEY `attendance_logs_user_id_fkey`;
-
--- DropForeignKey
-ALTER TABLE `refresh_tokens` DROP FOREIGN KEY `refresh_tokens_user_id_fkey`;
-
--- DropIndex
-DROP INDEX `attendance_logs_user_id_fkey` ON `attendance_logs`;
-
--- DropIndex
-DROP INDEX `refresh_tokens_refresh_key` ON `refresh_tokens`;
-
--- DropIndex
-DROP INDEX `refresh_tokens_user_id_fkey` ON `refresh_tokens`;
-
--- AlterTable
-ALTER TABLE `attendance_logs` DROP COLUMN `user_id`,
-    ADD COLUMN `shift_assignment_id` INTEGER NOT NULL,
-    MODIFY `status` ENUM('ontime', 'early_leave', 'late_checkout', 'missing', 'late') NOT NULL;
-
--- AlterTable
-ALTER TABLE `refresh_tokens` DROP COLUMN `refresh`,
-    ADD COLUMN `token` VARCHAR(191) NOT NULL;
-
--- DropTable
-DROP TABLE `user`;
-
 -- CreateTable
 CREATE TABLE `users` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
@@ -52,12 +13,38 @@ CREATE TABLE `users` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `attendance_logs` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `shift_assignment_id` INTEGER NOT NULL,
+    `record` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `category` ENUM('checkin', 'checkout') NOT NULL,
+    `status` ENUM('ontime', 'early_leave', 'late_checkout', 'missing', 'late') NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `refresh_tokens` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
+    `expires_at` DATETIME(3) NOT NULL,
+    `revoked` BOOLEAN NOT NULL DEFAULT false,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `refresh_tokens_token_key`(`token`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Shift` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `shift_start` TIME NOT NULL,
     `shift_end` TIME NOT NULL,
     `cross_day` BOOLEAN NOT NULL,
+    `active` BOOLEAN NOT NULL DEFAULT true,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -69,6 +56,8 @@ CREATE TABLE `shift_assignments` (
     `user_id` INTEGER NOT NULL,
     `shift_start` DATETIME(3) NOT NULL,
     `shift_end` DATETIME(3) NOT NULL,
+    `deleted` BOOLEAN NOT NULL DEFAULT false,
+    `deletedAt` DATETIME(3) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -92,9 +81,6 @@ CREATE TABLE `daily_summary` (
     UNIQUE INDEX `daily_summary_shift_assignment_id_key`(`shift_assignment_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateIndex
-CREATE UNIQUE INDEX `refresh_tokens_token_key` ON `refresh_tokens`(`token`);
 
 -- AddForeignKey
 ALTER TABLE `attendance_logs` ADD CONSTRAINT `attendance_logs_shift_assignment_id_fkey` FOREIGN KEY (`shift_assignment_id`) REFERENCES `shift_assignments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
