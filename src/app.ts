@@ -8,6 +8,8 @@ import shiftRouter from './routes/shift.route';
 import assignmentRouter from './routes/shiftAssignment.route';
 import attendanceRouter from './routes/attendanceLog.route';
 import summaryRouter from './routes/dailySummary.route';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './docs/swagger';
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 
 app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/users', userRouter);
 app.use('/api/shifts', shiftRouter);
