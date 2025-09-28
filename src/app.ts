@@ -8,6 +8,8 @@ import shiftRouter from './routes/shift.route';
 import assignmentRouter from './routes/shiftAssignment.route';
 import attendanceRouter from './routes/attendanceLog.route';
 import summaryRouter from './routes/dailySummary.route';
+import recordRouter from './routes/attendanceRecord.route';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 
@@ -25,6 +27,7 @@ app.use('/api/shifts', shiftRouter);
 app.use('/api/shift-assignments', assignmentRouter);
 app.use('/api/attendance-logs', attendanceRouter);
 app.use('/api/daily-summary', summaryRouter);
+app.use('/api/record', recordRouter);
 
 
 // Basic error handler
