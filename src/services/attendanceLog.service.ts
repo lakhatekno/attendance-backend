@@ -10,6 +10,13 @@ export type AttendanceFilterType = {
 	employeeName: string | null;
 };
 
+type AttendanceLogType = {
+	shiftAssignmentId: number;
+	record: Date;
+	category: AttendanceType;
+	status: AttendanceStatus;
+};
+
 const attendanceData: any = {
 	id: true,
 	record: true,
@@ -74,6 +81,19 @@ export class AttendanceLogServices {
 			where: where,
 			orderBy: {
 				record: 'desc',
+			},
+		});
+	}
+
+	async createAttendanceLog(data: AttendanceLogType) {
+		const { shiftAssignmentId, record, category, status } = data;
+
+		return prisma.attendanceLog.create({
+			data: {
+				shift_assignment_id: shiftAssignmentId,
+				record: record,
+				category: category,
+				status: status,
 			},
 		});
 	}
