@@ -149,7 +149,7 @@ export class AttendanceRecordServices {
 				});
 
 				return {
-					dailySummary,
+					updateDailySummary,
 					log,
 				};
 			} else if (dailySummary && !dailySummary.checkout_time) {
