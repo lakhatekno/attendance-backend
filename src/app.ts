@@ -9,7 +9,7 @@ import assignmentRouter from './routes/shiftAssignment.route';
 import attendanceRouter from './routes/attendanceLog.route';
 import summaryRouter from './routes/dailySummary.route';
 import recordRouter from './routes/attendanceRecord.route';
-import swaggerUi from 'swagger-ui-express';
+import { errorHandler } from './middlewares/errorHandler.middleware';
 
 dotenv.config();
 
@@ -29,11 +29,6 @@ app.use('/api/attendance-logs', attendanceRouter);
 app.use('/api/daily-summary', summaryRouter);
 app.use('/api/record', recordRouter);
 
-
-// Basic error handler
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-	console.error(err);
-	res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
-});
+app.use(errorHandler);
 
 export default app;
