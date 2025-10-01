@@ -27,7 +27,7 @@ export class AuthServices {
 			data: {
 				user_id: user.id,
 				token: refreshToken,
-				expires_at: new Date(Date.now() * 30 * 24 * 60 * 60 * 1000),
+				expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
 			},
 		});
 
@@ -35,12 +35,16 @@ export class AuthServices {
 	}
 
 	async logout(token: string) {
-		await prisma.refreshToken.updateMany({
+		const result = await prisma.refreshToken.updateMany({
 			where: { token: token },
 			data: {
 				revoked: true,
 			},
 		});
+
+    if (result.count === 0) {
+      throw new HttpError(404, "Token not found");
+    }
 
 		return { message: 'Logged Out' };
 	}
