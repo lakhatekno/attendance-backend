@@ -11,7 +11,11 @@ type userType = {
 };
 
 interface updateUser extends userType {
-	id: number;
+	id: string;
+}
+
+interface createUser extends userType {
+	id?: string;
 }
 
 export class UserServices {
@@ -30,10 +34,11 @@ export class UserServices {
 		});
 	}
 
-	async createUser(data: userType) {
+	async createUser(data: createUser) {
 		const hashed = await hashPassword(data.password);
 		return prisma.user.create({
 			data: {
+        ...(data.id ? { id: data.id } : {}),
 				email: data.email,
 				username: data.username,
 				password: hashed,
@@ -72,7 +77,7 @@ export class UserServices {
 		});
 	}
 
-	async deleteUser(id: number) {
+	async deleteUser(id: string) {
 		return prisma.user.delete({
 			where: { id: id }
 		});
