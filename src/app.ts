@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import authRouter from './routes/auth.route';
 import userRouter from './routes/user.route';
 import shiftRouter from './routes/shift.route';
 import assignmentRouter from './routes/shiftAssignment.route';
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
 
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/shifts', shiftRouter);
 app.use('/api/shift-assignments', assignmentRouter);
