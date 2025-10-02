@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { LoginType } from '../services/auth.service';
 import { AuthServices } from '../services/auth.service';
+import { HttpError } from '../libs/httpError';
 
 const authServices = new AuthServices();
 const loginSchema = z.object({
@@ -18,7 +19,7 @@ export class AuthController {
 		try {
 			const validate = loginSchema.safeParse(req.body);
 			if (!validate.success) {
-				res.status(400).json({ message: validate.error });
+        throw new HttpError(400, "Harap isi username dan password")
 			}
 			const token = await authServices.login(validate.data!);
 			res.json(token);

@@ -10,14 +10,16 @@ export type LoginType = {
 
 export class AuthServices {
 	async login(data: LoginType) {
-		const user = await prisma.user.findUnique({ where: { username: data.username } });
+		const user = await prisma.user.findUnique({
+			where: { username: data.username },
+		});
 		if (!user) {
-			throw new HttpError(404, "User not found");
+			throw new HttpError(404, 'User not found');
 		}
 
 		const valid = await verifyPassword(data.password, user.password);
 		if (!valid) {
-			throw new HttpError(401, "Password incorrect");
+			throw new HttpError(401, 'Password incorrect');
 		}
 
 		const accessToken = generateAccessToken({ id: user.id, role: user.role });
@@ -31,7 +33,11 @@ export class AuthServices {
 			},
 		});
 
-		return { accessToken, refreshToken };
+		return {
+			role: user.role,
+			accessToken: accessToken,
+			refreshToken: refreshToken,
+		};
 	}
 
 	async logout(token: string) {
@@ -42,25 +48,29 @@ export class AuthServices {
 			},
 		});
 
-    if (result.count === 0) {
-      throw new HttpError(404, "Token not found");
-    }
+		if (result.count === 0) {
+			throw new HttpError(404, 'Token not found');
+		}
 
 		return { message: 'Logged Out' };
 	}
 
 	async refresh(refreshToken: string) {
-		const stored = await prisma.refreshToken.findUnique({ where: { token: refreshToken } });
+		const stored = await prisma.refreshToken.findUnique({
+			where: { token: refreshToken },
+		});
 		if (!stored || stored.revoked) {
-			throw new HttpError(401, "Invalid refresh token");
+			throw new HttpError(401, 'Invalid refresh token');
 		}
 		if (stored && stored.expires_at < new Date()) {
-			throw new HttpError(401, "Token expired");
+			throw new HttpError(401, 'Token expired');
 		}
 
-		const user = await prisma.user.findUnique({ where: { id: stored.user_id } });
+		const user = await prisma.user.findUnique({
+			where: { id: stored.user_id },
+		});
 		if (!user) {
-			throw new HttpError(404, "User not found");
+			throw new HttpError(404, 'User not found');
 		}
 
 		const accessToken = generateAccessToken({ id: user.id, role: user.role });
@@ -68,3 +78,4 @@ export class AuthServices {
 		return { accessToken };
 	}
 }
+
