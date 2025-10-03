@@ -16,9 +16,8 @@ export class ShiftAssingmentController {
 	static async getAllAssignmentsByUser(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { userId } = req.body;
-			const parsedId = parseInt(userId);
 
-			const assignments = await assignmentServices.getAllAssignmentsByUser(parsedId);
+			const assignments = await assignmentServices.getAllAssignmentsByUser(userId);
 			res.json(assignments);
 		} catch (e) {
 			next(e);

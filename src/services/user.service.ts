@@ -15,7 +15,7 @@ interface updateUser extends userType {
 }
 
 interface createUser extends userType {
-	id?: string;
+	id: string | undefined;
 }
 
 export class UserServices {
@@ -30,6 +30,7 @@ export class UserServices {
 			},
 			where: {
 				role: Role.user,
+        active: true,
 			},
 		});
 	}
@@ -78,8 +79,11 @@ export class UserServices {
 	}
 
 	async deleteUser(id: string) {
-		return prisma.user.delete({
-			where: { id: id }
+		return prisma.user.update({
+			where: { id: id },
+      data: {
+        active: false,
+      }
 		});
 	}
 }

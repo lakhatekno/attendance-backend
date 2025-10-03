@@ -15,6 +15,7 @@ model User {
   email                 String              @unique
   password              String
   name                  String
+  active                Boolean             @default(true)
   role                  Role                @default(user)
   refresh_token         RefreshToken[]
   shift_assignments     ShiftAssignment[]

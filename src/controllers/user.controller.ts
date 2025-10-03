@@ -5,6 +5,7 @@ import { UserServices } from '../services/user.service';
 const userService = new UserServices();
 
 const userSchema = z.object({
+	id: z.string().optional(),
 	email: z.email(),
 	username: z.string().min(1, 'Username required'),
 	password: z.string().min(8, 'Password minimum 8 character'),
@@ -29,6 +30,7 @@ export class UserController {
 				res.status(400).json({ message: validate.error.issues[0] });
 			}
 			const user = await userService.createUser({
+				id: validate.data?.id,
 				email: validate.data?.email!,
 				username: validate.data?.username!,
 				password: validate.data?.password!,
@@ -49,4 +51,24 @@ export class UserController {
 			next(e);
 		}
 	}
+
+	static async updateUser(req: Request, res: Response, next: NextFunction) {
+		try {
+			const user = await userService.updateUserInfo(req.body);
+			res.status(200).json({ message: 'Success' });
+		} catch (error) {
+			next(error);
+		}
+	}
+
+  static async deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.body;
+      await userService.deleteUser(id);
+      res.status(200).json({ message: 'Success'});
+    } catch (error) {
+      next(error);
+    }
+  }
 }
+

@@ -2,7 +2,7 @@ import { prisma } from '../libs/prismaClient';
 
 export type assignmentType = {
 	shiftId: number;
-	userId: number;
+	userId: string;
 	shiftStart: string;
 	shiftEnd: string;
 };
@@ -16,7 +16,7 @@ export class ShiftAssignmentServices {
 		return prisma.shiftAssignment.findMany();
 	}
 
-	async getAllAssignmentsByUser(userId: number) {
+	async getAllAssignmentsByUser(userId: string) {
 		return prisma.shiftAssignment.findMany({
 			where: { user_id: userId },
 		});
