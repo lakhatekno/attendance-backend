@@ -22,4 +22,24 @@ export class AttendanceLogController {
 			next(e);
 		}
 	}
+
+	static async updateArbitraryLog(
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) {
+		try {
+			const { id, record, category, status } = req.body;
+			await attendanceService.updateArbitraryLog({
+				id,
+				record,
+				category,
+				status,
+			});
+			res.status(200).json({ message: 'Success' });
+		} catch (error) {
+      next(error);
+    }
+	}
 }
+
