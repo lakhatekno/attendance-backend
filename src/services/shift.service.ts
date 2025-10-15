@@ -1,5 +1,5 @@
 import { prisma } from '../libs/prismaClient';
-import { isTimeFormatValid } from '../libs/validation';
+import { isTimeFormatValid, toUTCDate } from '../libs/validation';
 
 type activeStatus = {
 	id: number;
@@ -22,6 +22,14 @@ export class ShiftServices {
 	async getAllShifts() {
 		return prisma.shift.findMany();
 	}
+	
+	async getActiveShifts() {
+		return prisma.shift.findMany({ where: { active: true } });
+	}
+	
+	async getInactiveShifts() {
+		return prisma.shift.findMany({ where: { active: false } });
+	}
 
 	async createShift(data: shiftType) {
 		const shiftStartValidation = isTimeFormatValid(data.shift_start);
@@ -31,10 +39,10 @@ export class ShiftServices {
 			return prisma.shift.create({
 				data: {
 					name: data.name,
-					shift_start: data.shift_start,
-					shift_end: data.shift_end,
+					shift_start: toUTCDate(data.shift_start),
+					shift_end: toUTCDate(data.shift_end),
 					cross_day: data.cross_day,
-          active: data.active,
+					active: data.active,
 				},
 			});
 		}
@@ -66,8 +74,8 @@ export class ShiftServices {
 			},
 		});
 	}
-	
-  async activateShift(id: number) {
+
+	async activateShift(id: number) {
 		return prisma.shift.update({
 			where: { id: id, active: false },
 			data: {
