@@ -8,6 +8,7 @@ router.post('/', ShiftAssingmentController.createAssignments);
 router.put('/', ShiftAssingmentController.updateAssignments);
 router.put('/delete-batch', ShiftAssingmentController.softDeleteAssignments);
 
+router.post('/monthly', ShiftAssingmentController.getMonthlyAssignments);
 router.get('/per-user', ShiftAssingmentController.getAllAssignmentsByUser);
 router.post('/per-user', ShiftAssingmentController.createAssignment);
 router.put('/per-user', ShiftAssingmentController.updateAssignment);
