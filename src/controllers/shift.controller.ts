@@ -4,9 +4,27 @@ import { ShiftServices } from '../services/shift.service';
 const shiftService = new ShiftServices();
 
 export class ShiftController {
-	static async getShifts(_req: Request, res: Response, next: NextFunction) {
+	static async getAllShifts(_req: Request, res: Response, next: NextFunction) {
 		try {
 			const shifts = await shiftService.getAllShifts();
+			res.json(shifts);
+		} catch (e) {
+			next(e);
+		}
+	}
+	
+	static async getActiveShifts(_req: Request, res: Response, next: NextFunction) {
+		try {
+			const shifts = await shiftService.getActiveShifts();
+			res.json(shifts);
+		} catch (e) {
+			next(e);
+		}
+	}
+	
+	static async getInactiveShifts(_req: Request, res: Response, next: NextFunction) {
+		try {
+			const shifts = await shiftService.getInactiveShifts();
 			res.json(shifts);
 		} catch (e) {
 			next(e);
@@ -52,7 +70,7 @@ export class ShiftController {
 			const { id } = req.body;
 
 			await shiftService.activateShift(id);
-			res.status(204);
+			res.status(200).json({ message: 'Success' });
 		} catch (e) {
 			next(e);
 		}
@@ -63,7 +81,7 @@ export class ShiftController {
 			const { id } = req.body;
 
 			await shiftService.inactivateShift(id);
-			res.status(204);
+			res.status(200).json({ message: 'Success' });
 		} catch (e) {
 			next(e);
 		}

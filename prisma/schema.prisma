@@ -10,11 +10,12 @@ generator client {
 model User {
   @@map("users")
   
-  id                    Int                 @id @default(autoincrement())
+  id                    String                 @id @default(cuid())
   username              String              @unique
   email                 String              @unique
   password              String
   name                  String
+  active                Boolean             @default(true)
   role                  Role                @default(user)
   refresh_token         RefreshToken[]
   shift_assignments     ShiftAssignment[]
@@ -35,7 +36,7 @@ model RefreshToken {
   @@map("refresh_tokens")
 
   id                  Int       @id @default(autoincrement())
-  user_id             Int
+  user_id             String
   token               String    @unique
   expires_at          DateTime
   revoked             Boolean   @default(false)
@@ -59,7 +60,7 @@ model ShiftAssignment {
 
   id                  Int                     @id @default(autoincrement())
   shift_id            Int
-  user_id             Int
+  user_id             String
   shift_start         DateTime
   shift_end           DateTime
   deleted             Boolean                 @default(false)

@@ -3,11 +3,14 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import authRouter from './routes/auth.route';
 import userRouter from './routes/user.route';
 import shiftRouter from './routes/shift.route';
 import assignmentRouter from './routes/shiftAssignment.route';
 import attendanceRouter from './routes/attendanceLog.route';
 import summaryRouter from './routes/dailySummary.route';
+import recordRouter from './routes/attendanceRecord.route';
+import { errorHandler } from './middlewares/errorHandler.middleware';
 
 dotenv.config();
 
@@ -20,17 +23,14 @@ app.use(express.json());
 
 app.get('/health', (_req: Request, res: Response) => res.json({ ok: true }));
 
+app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/shifts', shiftRouter);
 app.use('/api/shift-assignments', assignmentRouter);
 app.use('/api/attendance-logs', attendanceRouter);
 app.use('/api/daily-summary', summaryRouter);
+app.use('/api/record', recordRouter);
 
-
-// Basic error handler
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-	console.error(err);
-	res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
-});
+app.use(errorHandler);
 
 export default app;

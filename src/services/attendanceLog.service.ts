@@ -17,6 +17,13 @@ type AttendanceLogType = {
 	status: AttendanceStatus;
 };
 
+type AttendanceLogUpdate = {
+	id: number;
+	record: Date;
+	category: AttendanceType;
+	status: AttendanceStatus;
+};
+
 const attendanceData: any = {
 	id: true,
 	record: true,
@@ -97,4 +104,18 @@ export class AttendanceLogServices {
 			},
 		});
 	}
+
+	async updateArbitraryLog(data: AttendanceLogUpdate) {
+		const { id, record, category, status } = data;
+
+		return prisma.attendanceLog.update({
+			where: { id: id },
+			data: {
+				record: record,
+				category: category,
+				status: status,
+			},
+		});
+	}
 }
+

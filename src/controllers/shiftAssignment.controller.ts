@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ShiftAssignmentServices, assignmentType, updateAssignment } from '../services/shiftAssignment.service';
+import { MonthlyWindow, ShiftAssignmentServices, assignmentType, updateAssignment } from '../services/shiftAssignment.service';
 
 const assignmentServices = new ShiftAssignmentServices();
 
@@ -12,13 +12,22 @@ export class ShiftAssingmentController {
 			next(e);
 		}
 	}
+	
+	static async getMonthlyAssignments(req: Request, res: Response, next: NextFunction) {
+		try {
+			const data: MonthlyWindow = req.body;
+			const assignments = await assignmentServices.getMonthlyAssignments(data);
+			res.json(assignments);
+		} catch (e) {
+			next(e);
+		}
+	}
 
 	static async getAllAssignmentsByUser(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { userId } = req.body;
-			const parsedId = parseInt(userId);
 
-			const assignments = await assignmentServices.getAllAssignmentsByUser(parsedId);
+			const assignments = await assignmentServices.getAllAssignmentsByUser(userId);
 			res.json(assignments);
 		} catch (e) {
 			next(e);
@@ -32,8 +41,7 @@ export class ShiftAssingmentController {
 			const assignment = await assignmentServices.createAssignment({
 				shiftId: data.shiftId,
 				userId: data.userId,
-				shiftStart: data.shiftStart,
-				shiftEnd: data.shiftEnd,
+				date: data.date,
 			});
 			res.status(201).json(assignment.id);
 		} catch (e) {
