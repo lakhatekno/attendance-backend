@@ -8,7 +8,11 @@ services:
     env_file:
       - ".docker-compose.env"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma migrate deploy && node dist/server.js"
+    container_name: attendance-backend
+    image: lakhatekno/attendance-backend:1.0
   db:
     image: mysql:latest
     restart: always
@@ -21,6 +25,11 @@ services:
       - "3307:3306"
     volumes:
       - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
 volumes:
   db-data:
